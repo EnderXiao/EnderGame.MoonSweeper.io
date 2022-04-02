@@ -1,0 +1,88 @@
+.Map_row{
+    display: flex;
+    flex-direction: row;
+}
+
+.Map_item{
+    width: 42px;
+    height: 42px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    float: left;
+    border-radius: 5px;
+    margin: 2px;
+    transition: 110ms ease-in-out;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f0c26e;
+    -webkit-transition: 110ms ease-in-out;
+}
+
+.Map_item_open{
+    width: 42px;
+    height: 42px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    float: left;
+    border-radius: 5px;
+    margin: 2px;
+    transition: 110ms ease-in-out;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #847499;
+    -webkit-transition: 110ms ease-in-out;
+    /* color: #F0C26E; */
+    /* box-shadow: 0 0 40px rgba(240, 194, 110, 0.874); */
+}
+
+.cell--1 {
+    color: #6892a5;
+}
+
+.cell--2 {
+    color: #6892a5;
+
+}
+
+.cell--3 {
+    color: #68a57c;
+}
+
+.cell--4 {
+    color: #6d5e75;
+}
+
+.cell--5 {
+    color: #a15f6b;
+}
+
+.cell--6 {
+    color: #972633;
+}
+
+.cell--7 {
+    color: #907c9b;
+}
+
+.cell--8 {
+    color: #eae9f0;
+}
+.cell--9 {
+    color: black;
+}
+.cell--0 {
+    color: black;
+}
+
+.Map {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+}
