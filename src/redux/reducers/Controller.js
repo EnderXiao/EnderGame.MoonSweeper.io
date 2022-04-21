@@ -94,7 +94,11 @@ export default function (preState = initialState, action) {
                     );
                     draft.boardMap = expendResult.boardMap;
                     draft.openedCellCount += expendResult.openedCellCount;
-                    console.log(draft.openedCellCount);
+                    if (expendResult.wrongList.length !== 0) {
+                        draft.gameState = GAME.LOSE;
+                        draft.enableTimer = false;
+                    }
+
                     //获胜判断
                     if (
                         preState.width * preState.height -
@@ -102,7 +106,8 @@ export default function (preState = initialState, action) {
                         draft.openedCellCount
                     ) {
                         draft.gameState = GAME.WIN;
-                        draft.elapsedTime = false;
+                        draft.flagCount = preState.mineCount;
+                        draft.enableTimer = false;
                     }
                 }
             });

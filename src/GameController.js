@@ -66,10 +66,8 @@ export const getNextCellCode = (cover) => {
 export const getFlagChange = (cover) => {
     switch (cover) {
         case CODES.CELL_STATUS.CLOSED:
-        case CODES.CELL_STATUS.FLAG:
             return 1;
         case CODES.CELL_STATUS.FLAG:
-        case CODES.CELL_STATUS.QUESTION:
             return -1;
         default:
             return 0;
@@ -78,6 +76,8 @@ export const getFlagChange = (cover) => {
 
 function expendJudge(boardMap, x, y) {
     let flagCount = 0;
+    let wrongCount = 0;
+    let wrongList = [];
     let move = [
         [-1, -1],
         [-1, 0],
@@ -100,10 +100,17 @@ function expendJudge(boardMap, x, y) {
                     cell_now.value === CODES.CELL_VALUE.MINE
                 )
                     flagCount++;
+                if (
+                    cell_now.cover === CODES.CELL_STATUS.FLAG &&
+                    cell_now.value !== CODES.CELL_VALUE.MINE
+                ) {
+                    wrongCount++;
+                    wrongList.push({ x: x_new, y: y_new });
+                }
             }
         }
     }
-    return flagCount === boardMap[x][y].value;
+    return { judgement: flagCount === boardMap[x][y].value, wrongList };
 }
 
 export const expendOpenCell = (boardMap, x, y, double) => {
@@ -152,7 +159,17 @@ export const expendOpenCell = (boardMap, x, y, double) => {
             }
         }
     };
-    if (double && expendJudge(boardMap, x, y)) dfs(x, y);
-    if (!double) dfs(x, y);
-    return { boardMap, openedCellCount };
+    let wrongList = [];
+    if (double) {
+        let judgeRes = expendJudge(boardMap, x, y);
+        wrongList = judgeRes.wrongList;
+
+        if (judgeRes.judgement) dfs(x, y);
+        for (let i = 0; i < judgeRes.wrongList.length; i++) {
+            const element = judgeRes.wrongList[i];
+            boardMap[element.x][element.y].cover = CODES.CELL_STATUS.OPENED;
+            boardMap[element.x][element.y].value = CODES.CELL_VALUE.BAD_GUESS;
+        }
+    } else dfs(x, y);
+    return { boardMap, openedCellCount, wrongList };
 };

@@ -30,6 +30,7 @@ export const CODES = {
     CELL_VALUE: {
         MINE: 9,
         NOTHING: 0,
+        BAD_GUESS: 10,
     },
 };
 

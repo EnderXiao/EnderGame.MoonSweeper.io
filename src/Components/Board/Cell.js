@@ -63,22 +63,34 @@ class Cell extends Component {
         className = "Map_item";
         switch (cell.cover) {
             case CODES.CELL_STATUS.CLOSED:
-                if (cell.value === CODES.CELL_VALUE.MINE) {
-                    if (gameState === GAME.LOSE) {
-                        renderValue = "🌑";
-                    } else if (gameState === GAME.WIN) {
-                        renderValue = "🌝";
-                    } else {
+                switch (cell.value) {
+                    case CODES.CELL_VALUE.MINE:
+                        if (gameState === GAME.LOSE) {
+                            renderValue = "🌑";
+                        } else if (gameState === GAME.WIN) {
+                            renderValue = "🌝";
+                        } else {
+                            renderValue = "";
+                        }
+                        break;
+                    case CODES.CELL_VALUE.BAD_GUESS:
+                        renderValue = "🌙";
+                        break;
+                    default:
                         renderValue = "";
-                    }
-                } else {
-                    renderValue = "";
+                        break;
                 }
                 break;
             case CODES.CELL_STATUS.FLAG:
                 if (gameState === GAME.WIN) renderValue = "🌝";
-                else if (gameState === GAME.LOSE) renderValue = "🌑";
-                else renderValue = "🌚";
+                else if (gameState === GAME.LOSE) {
+                    if (cell.value === CODES.CELL_VALUE.MINE)
+                        renderValue = "🌑";
+                    else {
+                        renderValue = "🌙";
+                        className = "Map_item_open";
+                    }
+                } else renderValue = "🌚";
                 break;
             case CODES.CELL_STATUS.QUESTION:
                 renderValue = "🌓";
@@ -99,6 +111,9 @@ class Cell extends Component {
                                 return "";
                         }
                         break;
+                    case CODES.CELL_VALUE.BAD_GUESS:
+                        renderValue = "🌙";
+                        break;
                     case CODES.CELL_VALUE.NOTHING:
                         renderValue = "";
                         break;
@@ -110,12 +125,26 @@ class Cell extends Component {
         }
         this.setState({ className, renderValue });
     };
+    handleTouchEnd = () => {
+        clearImmediate(this.pressTime);
+    };
+    handleTouchStart = () => {
+        this.pressTime = setTimeout(() => {
+            const { x, y, gameState } = this.props;
+            if (gameState === GAME.READY || gameState === GAME.RUN) {
+                this.props.rotateCellState(x, y);
+            }
+            this.setMine();
+        }, 1000);
+    };
     render() {
         return (
             <div
                 onClick={(e) => this.handleLeftClick(e)}
                 onContextMenu={(e) => this.handleRightClick(e)}
                 className={this.state.className}
+                onTouchStart={this.handleTouchStart}
+                onTouchEnd={this.handleTouchEnd}
             >
                 {this.state.renderValue}
             </div>
